@@ -45,6 +45,23 @@ El proyecto está dirigido a un contexto **académico**, como demostración inte
 - Implementar un protocolo de comunicación estructurado (con checksum o framing) para mayor robustez frente a ruido en la UART.
 - Sumar un watchdog timer por hardware para recuperación automática ante cuelgues.
 
+## 2. Arquitectura del sistema
+El sistema se construye en torno a la placa de desarrollo LPC1769(ARM Cortex-M3 a 120 MHz). Los periféricos externos se conectan directamente a los pines del microcontrolador, respetando los niveles lógicos: 3.3V para la lógica digital del LPC1769 y el sensor infrarrojo, 5V para el servomotor.
+
+### Descripción del Circuito y Consideraciones de Diseño
+La lógica digital del LPC1769 opera a 3.3 V. El servomotor requiere 5 V, por lo que se alimenta desde una fuente externa independiente. El sensor infrarrojo de presencia opera a 3.3 V y se alimenta directamente desde la placa LPC1769. El pulsador de solicitud utiliza la resistencia de pull-up interna del LPC1769 en el pin P2.10, por lo que la señal está normalmente en nivel alto y baja al presionar, generando el flanco descendente que dispara EINT0. El pin del sensor infrarrojo (P0.1) también se configura con pull-up interno, ya que el sensor conduce a nivel bajo cuando detecta presencia. El potenciómetro se conecta directamente entre 3.3 V y GND con el cursor a P0.23, que se configura en modo tristate para no interferir con la señal analógica. Los LEDs se conectan con resistencias limitadoras de 330 Ω a los pines de salida.
+
+  Pin                           Función                 Periferico               Descripción
+  P2.10                         EINT0                   Interrupción Externa     Solicitud de paso, flanco descendente
+  P0.23 / AD 0.0                Analogica               ADC Canal 0              Simula saldo/autorización 
+  P0.0                          Salida Digital          Timer0 / PWM             Señal de control del servomotor
+  P0.1                          Entrada Digital         Timer3                   Sensor infrarrojo de presencia
+  P0.5                          Salida Digital          GPIO                     Led verde - Barrera abierta
+  P0.6                          Salida Digital          GPIO                     Led rojo - Reposo / rechazo 
+  P0.2 / TXD0                   UART TX                 UART0                    Transmisión serie al CP2102
+  P0.3 / RXD0                   UART RX                 UART0                    Recepción desde la PC
+
+
 
 ##   3. Especificaciones Eléctricas, Alimentación y Entorno 
 - Tension del sistema: uso general 3.3V, 5V para servomotor
@@ -64,7 +81,6 @@ GPIO — entradas/salidas digitales (servo, LEDs, sensor)
 PINSEL — configuración de multiplexado de pines
 
 - Estrategia de Concurrencia: Bare-metal con máquina de estados cooperativa, manejada completamente por interrupciones (sin RTOS). El main() corre un superloop simple que solo atiende flags (uart_comando_pendiente, uart_reporte_pendiente) seteados desde las ISRs; toda la lógica de tiempo real ocurre dentro de los handlers de interrupción:
-- 
 TIMER0 → genera el PWM del servo por software (match en MR0/MR1), es la de mayor prioridad (0) por ser timing-crítica
 TIMER3 → polling del sensor de presencia cada 20 ms, prioridad 1
 DMA → finalización de la conversión ADC, prioridad 2
