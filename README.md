@@ -92,7 +92,7 @@ La variable global estado actúa como el estado compartido de la máquina de est
   Etapa 6 - pruebas dee integración: se testeo manualmente todas las funciones nombradas anteriormente como un solo sistema para el control de acciones y correccion de erorres o ajustes finos que requeria (limites, umbrales, tiempos, etc).
 
 ## 5. Pruebas del sistema 
-[pruebas del sistema en video](https://drive.google.com/drive/folders/1RqTOl2sDEpeCGqBsK7eEUQhcXAhm99Sc?usp=drive_link)
+[pruebas del sistema en video](https://drive.google.com/drive/folders/1RqTOl2sDEpeCGqBsK7eEUQhcXAhm99Sc?usp=drive_link)  --> (solo con mail de la UNC)
 
   
   
