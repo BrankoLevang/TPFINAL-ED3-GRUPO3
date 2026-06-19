@@ -51,14 +51,14 @@ El sistema se construye en torno a la placa de desarrollo LPC1769(ARM Cortex-M3 
 ### Descripción del Circuito y Consideraciones de Diseño
 La lógica digital del LPC1769 opera a 3.3 V. El servomotor requiere 5 V, por lo que se alimenta desde una fuente externa independiente. El sensor infrarrojo de presencia opera a 3.3 V y se alimenta directamente desde la placa LPC1769. El pulsador de solicitud utiliza la resistencia de pull-up interna del LPC1769 en el pin P2.10, por lo que la señal está normalmente en nivel alto y baja al presionar, generando el flanco descendente que dispara EINT0. El pin del sensor infrarrojo (P0.1) también se configura con pull-up interno, ya que el sensor conduce a nivel bajo cuando detecta presencia. El potenciómetro se conecta directamente entre 3.3 V y GND con el cursor a P0.23, que se configura en modo tristate para no interferir con la señal analógica. Los LEDs se conectan con resistencias limitadoras de 330 Ω a los pines de salida.
 
-  [P2.10                         EINT0                   Interrupción Externa     Solicitud de paso, flanco descendente]
-  [P0.23 / AD 0.0                Analogica               ADC Canal 0              Simula saldo/autorización] 
-  [P0.0                          Salida Digital          Timer0 / PWM             Señal de control del servomotor]
-  [P0.1                          Entrada Digital         Timer3                   Sensor infrarrojo de presencia]
-  [P0.5                          Salida Digital          GPIO                     Led verde - Barrera abierta]
-  [P0.6                          Salida Digital          GPIO                     Led rojo - Reposo / rechazo]
-  [P0.2 / TXD0                   UART TX                 UART0                    Transmisión serie al CP2102]
-  [P0.3 / RXD0                   UART RX                 UART0                    Recepción desde la PC]
+  [P2.10|                         EINT0|                   Interrupción Externa|     Solicitud de paso, flanco descendente] // 
+  [P0.23 / AD 0.0|                Analogica|               ADC Canal 0|              Simula saldo/autorización] // 
+  [P0.0|                          Salida Digital|         Timer0 / PWM|             Señal de control del servomotor] // 
+  [P0.1|                          Entrada Digital|         Timer3|                   Sensor infrarrojo de presencia] // 
+  [P0.5|                          Salida Digital|          GPIO|                     Led verde - Barrera abierta] // 
+  [P0.6|                          Salida Digital|          GPIO|                     Led rojo - Reposo / rechazo] // 
+  [P0.2 / TXD0|                   UART TX|                 UART0|                    Transmisión serie al CP2102] // 
+  [P0.3 / RXD0|                   UART RX|                 UART0|                    Recepción desde la PC] // 
 
 
 
