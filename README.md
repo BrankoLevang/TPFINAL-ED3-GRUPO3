@@ -2,13 +2,13 @@
 Participantes: Bolatti Agustin, Levang Branko U. , Muñoz Facundo
 
 
-## 🚀 1. Descripción General del Proyecto
+##  1. Descripción General del Proyecto
 
 El sistema implementa un **control de barrera de peaje automatizado** sobre el microcontrolador LPC1769, que resuelve el problema de gestionar el paso vehicular sin intervención manual, validando una condición de "tarifa" antes de habilitar el acceso. La llegada de un vehículo se detecta mediante una interrupción externa (EINT0) que dispara una medición analógica vía ADC, cuya conversión es transferida a memoria mediante GPDMA sin intervención de la CPU. Según el valor leído frente a un umbral configurado, el sistema decide abrir o no la barrera, controlando un servomotor mediante PWM generado por software. Una vez abierta, un sensor de presencia y un timeout de seguridad de 15 segundos garantizan que la barrera se cierre automáticamente, ya sea por el paso efectivo del vehículo o por inactividad prolongada, evitando que quede abierta indefinidamente.
 
 El proyecto está dirigido a un contexto **académico**, como demostración integrada de periféricos del LPC1769 (GPIO, EXTI, ADC, GPDMA, Timers y UART) trabajando en conjunto dentro de un sistema embebido con lógica de estados. Toda la operación del sistema —estado actual de la barrera, últimas 5 mediciones del ADC, estado del DMA y habilitación de la detección— se reporta en tiempo real por UART0 cada 1 segundo, y además permite el control remoto básico (habilitar/deshabilitar detección) mediante comandos de texto enviados por la misma interfaz, lo que facilita el monitoreo y la depuración durante las pruebas en banco.
 
-### 🎯 Alcances del Proyecto (¿Qué hace y qué NO hace el sistema?)
+### Alcances del Proyecto (¿Qué hace y qué NO hace el sistema?)
 
 **El sistema SÍ es capaz de:**
 - Detectar la llegada de un vehículo mediante un pulsador conectado a EINT0 (P2.10).
@@ -35,7 +35,7 @@ El proyecto está dirigido a un contexto **académico**, como demostración inte
 - Watchdog timer para recuperación automática ante fallos de firmware.
 - Calibración dinámica del umbral del ADC (valor fijo en tiempo de compilación).
 
-### ▶️ Posibles Etapas Siguientes (Líneas Futuras)
+###  Posibles Etapas Siguientes (Líneas Futuras)
 
 - Migrar el circuito de protoboard a un circuito impreso (PCB) diseñado bajo normas de compatibilidad electromagnética (EMC).
 - Implementar modos de bajo consumo (Sleep) administrados por hardware para permitir el uso de baterías o backup ante cortes de energía.
