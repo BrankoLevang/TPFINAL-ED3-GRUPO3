@@ -44,3 +44,53 @@ El proyecto está dirigido a un contexto **académico**, como demostración inte
 - Agregar un módulo de comunicación inalámbrica (Wi-Fi/LoRa) para reportar el estado a un sistema central de gestión de peajes.
 - Implementar un protocolo de comunicación estructurado (con checksum o framing) para mayor robustez frente a ruido en la UART.
 - Sumar un watchdog timer por hardware para recuperación automática ante cuelgues.
+
+
+##   3. Especificaciones Eléctricas, Alimentación y Entorno 
+- Tension del sistema: uso general 3.3V, 5V para servomotor
+- Alimentacion por USB, Uso de fuente externa para la alimentacion de servomotor
+- Consumo medio:
+- IDE MCUXpresso IDE v11.8 con LPCOpen v2.10
+- Microcontrolador NXP LPC1769 (ARM Cortex-M3)
+- Bibliotecas de Terceros y Versiones: LPCOpen / CMSIS (driver library de NXP para la familia LPC17xx)
+- Periféricos Avanzados Utilizados:
+NVIC — gestión de prioridades e interrupciones (NVIC_SetPriority, NVIC_EnableIRQ para EINT0, TIMER0-3, DMA, UART0, ADC)
+GPDMA — transferencia ADC → memoria sin CPU (canal P2M conectado a GPDMA_CONN_ADC)
+ADC — conversión por software (ADC_START_NOW), canal 0 (P0.23)
+EXTI (EINT0) — interrupción externa por flanco descendente (P2.10)
+Timers (TIMER0, TIMER1, TIMER2, TIMER3) — cuatro timers de hardware independientes, cada uno con match channels configurados (no se usa SysTick en este código)
+UART0 — comunicación serie con cálculo manual de baud rate (DLL/DLM/FDR) y FIFO habilitado
+GPIO — entradas/salidas digitales (servo, LEDs, sensor)
+PINSEL — configuración de multiplexado de pines
+
+- Estrategia de Concurrencia: Bare-metal con máquina de estados cooperativa, manejada completamente por interrupciones (sin RTOS). El main() corre un superloop simple que solo atiende flags (uart_comando_pendiente, uart_reporte_pendiente) seteados desde las ISRs; toda la lógica de tiempo real ocurre dentro de los handlers de interrupción:
+- 
+TIMER0 → genera el PWM del servo por software (match en MR0/MR1), es la de mayor prioridad (0) por ser timing-crítica
+TIMER3 → polling del sensor de presencia cada 20 ms, prioridad 1
+DMA → finalización de la conversión ADC, prioridad 2
+TIMER2 → timeout de seguridad de 15 s, prioridad 3
+EINT0 → detección de vehículo, prioridad 4 (la más baja del grupo crítico)
+TIMER1 y UART0 → reporte periódico y recepción de comandos, prioridad 5 (la de menor peso, ya que es solo I/O hacia el usuario)
+
+La variable global estado actúa como el estado compartido de la máquina de estados, modificado únicamente dentro de secciones protegidas por la jerarquía de prioridades del NVIC (no hay mutexes ni semáforos porque no hay RTOS).
+
+
+##  4. Proceso de Integración y Desarrollo 
+### Hicimos un supuesto de division de 6 etapas de desarrollo del programa:
+  Etapa 1: en esta etapa de planificacion emepzamos a implementar la idea, realizamos diagramas para ver que es lo que tenia que hacer el sistema completo funcionando. Hicimos planificacion del trabajo para las siguientes etapas, que sirvieron como una guia para el avance del proyecto. Incluimos una forma de trabajo por objetivos y no por tiempo 
+
+  Etapa 2 - Pulsador + Servo: Lo primero que teniamos que implementar fue la funcion principal de nuestro sistema. Un servomotor que simula una barrera que se abre y se cierra en raccion a la accion de nuestro pulsador. Para eso quisimos implementar un PWM por software, utilizando un timer, para la movilidad de nuestro motor, ajustando lo s grados que queriamos que girara nuestra barrera.
+
+  Etapa 3 - Pulsador + Servo + ADC: en esta etapa decidimos implementar que el pulsador active al servomotor PERO SOLO cuando el ADC lo permita para ya simular la tarifa del peaje como una condicion.
+
+  Etapa 4 - implementacion de un timeout: en esta altura, el ADC ya deberia tener correcta integracion en el sistema. lo que decidimos agregar como mejora, es un timeout para cerrar la barrera y que no sea controlada totalmente por el pulsador y como un seguro de que la barrera cierre ante cualquier inconsistencia.
+
+  Etapa 4 - Pulsador + Servo + ADC + Sensor: se agregaria un sensor infrarojo que lo que hace es detectar una presencia, por ejemplo un vehiculo. Cuando la presencia es detectada la barrera permanece abierta es espera de la salida del vehiculo. Una vez el sensor deja de detectar presencia, la señal que envia la misma se corta y se manda una orden de cerrar la barrera por mas que el timeout no haya terminado.
+
+  Etapa 5 - comunicacion por UART: decidimos agregar una comunicacion por UART bidireccional para el monitoreo del sistema. Mostraba por pantalla el estado de la interrupcion, si estaba habilitada o no, el estado actual del sistema, y el valor del ADC enviado por GPDMA. Tambien incorportaba una orden de OFF para detener todo el sistema en caso de falla o querer desactivarlo manualmente y a su vez una orden de ON para recuperar el funcionamiento. 
+
+  Etapa 6 - pruebas dee integración: se testeo manualmente todas las funciones nombradas anteriormente como un solo sistema para el control de acciones y correccion de erorres o ajustes finos que requeria (limites, umbrales, tiempos, etc).
+
+  
+  
+
