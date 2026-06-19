@@ -70,14 +70,14 @@ La lógica digital del LPC1769 opera a 3.3 V. El servomotor requiere 5 V, por lo
 - Microcontrolador NXP LPC1769 (ARM Cortex-M3)
 - Bibliotecas de Terceros y Versiones: LPCOpen / CMSIS (driver library de NXP para la familia LPC17xx)
 - Periféricos Avanzados Utilizados:
-NVIC — gestión de prioridades e interrupciones (NVIC_SetPriority, NVIC_EnableIRQ para EINT0, TIMER0-3, DMA, UART0, ADC)
-GPDMA — transferencia ADC → memoria sin CPU (canal P2M conectado a GPDMA_CONN_ADC)
-ADC — conversión por software (ADC_START_NOW), canal 0 (P0.23)
-EXTI (EINT0) — interrupción externa por flanco descendente (P2.10)
-Timers (TIMER0, TIMER1, TIMER2, TIMER3) — cuatro timers de hardware independientes, cada uno con match channels configurados (no se usa SysTick en este código)
-UART0 — comunicación serie con cálculo manual de baud rate (DLL/DLM/FDR) y FIFO habilitado
-GPIO — entradas/salidas digitales (servo, LEDs, sensor)
-PINSEL — configuración de multiplexado de pines
+      - NVIC — gestión de prioridades e interrupciones (NVIC_SetPriority, NVIC_EnableIRQ para EINT0, TIMER0-3, DMA, UART0, ADC)
+      - GPDMA — transferencia ADC → memoria sin CPU (canal P2M conectado a GPDMA_CONN_ADC)
+      - ADC — conversión por software (ADC_START_NOW), canal 0 (P0.23)
+      - EXTI (EINT0) — interrupción externa por flanco descendente (P2.10)
+      - Timers (TIMER0, TIMER1, TIMER2, TIMER3) — cuatro timers de hardware independientes, cada uno con match channels configurados (no se usa SysTick en este código)
+      - UART0 — comunicación serie con cálculo manual de baud rate (DLL/DLM/FDR) y FIFO habilitado
+      - GPIO — entradas/salidas digitales (servo, LEDs, sensor)
+      - PINSEL — configuración de multiplexado de pines
 
 - Estrategia de Concurrencia: Bare-metal con máquina de estados cooperativa, manejada completamente por interrupciones (sin RTOS). El main() corre un superloop simple que solo atiende flags (uart_comando_pendiente, uart_reporte_pendiente) seteados desde las ISRs; toda la lógica de tiempo real ocurre dentro de los handlers de interrupción:
 TIMER0 → genera el PWM del servo por software (match en MR0/MR1), es la de mayor prioridad (0) por ser timing-crítica
