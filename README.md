@@ -76,7 +76,7 @@ La variable global estado actúa como el estado compartido de la máquina de est
 
 
 ##  4. Proceso de Integración y Desarrollo 
-### Hicimos un supuesto de division de 6 etapas de desarrollo del programa:
+### Hicimos un supuesto de division de 7 etapas de desarrollo del programa:
   Etapa 1: en esta etapa de planificacion emepzamos a implementar la idea, realizamos diagramas para ver que es lo que tenia que hacer el sistema completo funcionando. Hicimos planificacion del trabajo para las siguientes etapas, que sirvieron como una guia para el avance del proyecto. Incluimos una forma de trabajo por objetivos y no por tiempo 
 
   Etapa 2 - Pulsador + Servo: Lo primero que teniamos que implementar fue la funcion principal de nuestro sistema. Un servomotor que simula una barrera que se abre y se cierra en raccion a la accion de nuestro pulsador. Para eso quisimos implementar un PWM por software, utilizando un timer, para la movilidad de nuestro motor, ajustando lo s grados que queriamos que girara nuestra barrera.
@@ -85,11 +85,11 @@ La variable global estado actúa como el estado compartido de la máquina de est
 
   Etapa 4 - implementacion de un timeout: en esta altura, el ADC ya deberia tener correcta integracion en el sistema. lo que decidimos agregar como mejora, es un timeout para cerrar la barrera y que no sea controlada totalmente por el pulsador y como un seguro de que la barrera cierre ante cualquier inconsistencia.
 
-  Etapa 4 - Pulsador + Servo + ADC + Sensor: se agregaria un sensor infrarojo que lo que hace es detectar una presencia, por ejemplo un vehiculo. Cuando la presencia es detectada la barrera permanece abierta es espera de la salida del vehiculo. Una vez el sensor deja de detectar presencia, la señal que envia la misma se corta y se manda una orden de cerrar la barrera por mas que el timeout no haya terminado.
+  Etapa 5 - Pulsador + Servo + ADC + Sensor: se agregaria un sensor infrarojo que lo que hace es detectar una presencia, por ejemplo un vehiculo. Cuando la presencia es detectada la barrera permanece abierta es espera de la salida del vehiculo. Una vez el sensor deja de detectar presencia, la señal que envia la misma se corta y se manda una orden de cerrar la barrera por mas que el timeout no haya terminado.
 
-  Etapa 5 - comunicacion por UART: decidimos agregar una comunicacion por UART bidireccional para el monitoreo del sistema. Mostraba por pantalla el estado de la interrupcion, si estaba habilitada o no, el estado actual del sistema, y el valor del ADC enviado por GPDMA. Tambien incorportaba una orden de OFF para detener todo el sistema en caso de falla o querer desactivarlo manualmente y a su vez una orden de ON para recuperar el funcionamiento. 
+  Etapa 6 - comunicacion por UART: decidimos agregar una comunicacion por UART bidireccional para el monitoreo del sistema. Mostraba por pantalla el estado de la interrupcion, si estaba habilitada o no, el estado actual del sistema, y el valor del ADC enviado por GPDMA. Tambien incorportaba una orden de OFF para detener todo el sistema en caso de falla o querer desactivarlo manualmente y a su vez una orden de ON para recuperar el funcionamiento. 
 
-  Etapa 6 - pruebas dee integración: se testeo manualmente todas las funciones nombradas anteriormente como un solo sistema para el control de acciones y correccion de erorres o ajustes finos que requeria (limites, umbrales, tiempos, etc).
+  Etapa 7 - pruebas dee integración: se testeo manualmente todas las funciones nombradas anteriormente como un solo sistema para el control de acciones y correccion de erorres o ajustes finos que requeria (limites, umbrales, tiempos, etc).
 
 ## 5. Pruebas del sistema 
 [pruebas del sistema en video](https://drive.google.com/drive/folders/1RqTOl2sDEpeCGqBsK7eEUQhcXAhm99Sc?usp=drive_link)  --> (solo con mail de la UNC)
