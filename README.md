@@ -69,7 +69,7 @@ La lógica digital del LPC1769 opera a 3.3 V. El servomotor requiere 5 V, por lo
 - IDE MCUXpresso IDE v11.8 con LPCOpen v2.10
 - Microcontrolador NXP LPC1769 (ARM Cortex-M3)
 - Bibliotecas de Terceros y Versiones: LPCOpen / CMSIS (driver library de NXP para la familia LPC17xx)
-  ####- Periféricos Avanzados Utilizados:
+  #### - Periféricos Avanzados Utilizados:
       - NVIC — gestión de prioridades e interrupciones (NVIC_SetPriority, NVIC_EnableIRQ para EINT0, TIMER0-3, DMA, UART0, ADC)
       - GPDMA — transferencia ADC → memoria sin CPU (canal P2M conectado a GPDMA_CONN_ADC)
       - ADC — conversión por software (ADC_START_NOW), canal 0 (P0.23)
